@@ -3,7 +3,9 @@ package rest;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import entity.Reservation;
 
@@ -39,17 +41,28 @@ public class ReservationService {
 		return service;
 	}
 
-	public Reservation getReservation(String guestFirstName, String guestSecondName, int roomNumber, LocalDate startDate, LocalDate endDate) {
-		return reservationList.get(0);
+	public String getReservationsByDateRange(LocalDate startDate, LocalDate endDate) {
+		List<Reservation> resultList = reservationList.stream().filter(r -> inDateRange(startDate, endDate, r))
+				.collect(Collectors.toList());
+
+		return resultList.toString();
 	}
 
-	public String createReservation(String guestFirstName, String guestSecondName, int roomNumber, LocalDate startDate, LocalDate endDate) {
+	private boolean inDateRange(LocalDate startDate, LocalDate endDate, Reservation r) {
+		return !r.getStartDate().isBefore(startDate) && !r.getEndDate().isAfter(endDate);
+	}
+
+	public String listReservations() {
+		return Arrays.toString(reservationList.toArray());
+	}
+
+	public String createReservation(String guestFirstName, String guestSecondName, Integer roomNumber, LocalDate startDate, LocalDate endDate) {
 		reservationList.add(new Reservation(guestFirstName, guestSecondName, roomNumber, startDate, endDate));
 		return "Your reservation succesfully created!";
 	}
 
 	// TODO: maybe use Optional to generate response.
-	public String updateReservation(String guestFirstName, String guestSecondName, int roomNumber, LocalDate startDate, LocalDate endDate) {
+	public String updateReservation(String guestFirstName, String guestSecondName, Integer roomNumber, LocalDate startDate, LocalDate endDate) {
 		if (true) {
 			// if found reservation, return successful response
 		} else {
@@ -58,7 +71,7 @@ public class ReservationService {
 		return "";
 	}
 	
-	public String deleteReservation(String guestFirstName, String guestSecondName, int roomNumber, LocalDate startDate, LocalDate endDate) {
+	public String deleteReservation(String guestFirstName, String guestSecondName, Integer roomNumber, LocalDate startDate, LocalDate endDate) {
 		if (true) {
 			// if found reservation, return successful response
 		} else {

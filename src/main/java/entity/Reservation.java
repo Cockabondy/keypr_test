@@ -6,7 +6,7 @@ public class Reservation {
 
 	private String guestFirstName;
 	private String guestSecondName;
-	private int roomNumber;
+	private Integer roomNumber;
 	private LocalDate startDate;
 	private LocalDate endDate;
 
@@ -14,7 +14,7 @@ public class Reservation {
 		super();
 	}
 
-	public Reservation(String guestFirstName, String guestSecondName, int roomNumber, LocalDate startDate, LocalDate endDate) {
+	public Reservation(String guestFirstName, String guestSecondName, Integer roomNumber, LocalDate startDate, LocalDate endDate) {
 		super();
 		this.guestFirstName = guestFirstName;
 		this.guestSecondName = guestSecondName;
@@ -39,11 +39,11 @@ public class Reservation {
 		this.guestSecondName = guestSecondName;
 	}
 
-	public int getRoomNumber() {
+	public Integer getRoomNumber() {
 		return roomNumber;
 	}
 
-	public void setRoomNumber(int roomNumber) {
+	public void setRoomNumber(Integer roomNumber) {
 		this.roomNumber = roomNumber;
 	}
 
