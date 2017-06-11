@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import entity.Reservation;
+
 @SpringBootApplication
 @RestController
 public class Application {
@@ -30,6 +32,59 @@ public class Application {
 		return ReservationService.getInstance().createReservation(guestFirstName, guestSecondName, roomId, startDate, endDate);
 	}
 
+	// read
+	// delete
+	// those methods currently would work only by equals. Required all fields.
+	// It's better to create map (but we don't have business logic which will tell us what exactly we can pair).
+	// meaning that every value might be unique, so we won't be able to process anything. Need to stick with some IDs.
+
+	// update work also by equals (for simplicity). So need to provide all initial fields.
+	@RequestMapping(value = "/read/", method = RequestMethod.GET)
+	public String readReservation(@RequestParam(value = "roomId", required = true) int roomId,
+			@RequestParam(value = "name", required = true) String guestFirstName,
+			@RequestParam(value = "surname", required = true) String guestSecondName,
+			@RequestParam(value = "from", required = true) String fromDate,
+			@RequestParam(value = "to", required = true) String toDate) {
+		LocalDate startDate = LocalDate.parse(fromDate);
+		LocalDate endDate = LocalDate.parse(toDate);
+
+		return ReservationService.getInstance().readReservation(new Reservation(guestFirstName, guestSecondName, roomId, startDate, endDate));
+	}
+
+	// update work also by equals (for simplicity). So need to provide all initial fields.
+	@RequestMapping(value = "/update/", method = RequestMethod.GET)
+	public String updateReservation(@RequestParam(value = "originalRoomId", required = true) int originalRoomId,
+			@RequestParam(value = "originalName", required = true) String originalGuestFirstName,
+			@RequestParam(value = "originalSurname", required = true) String originalGuestSecondName,
+			@RequestParam(value = "originalFrom", required = true) String originalFromDate,
+			@RequestParam(value = "originalTo", required = true) String originalToDate,
+			@RequestParam(value = "roomId", required = false) int roomId,
+			@RequestParam(value = "name", required = false) String guestFirstName,
+			@RequestParam(value = "surname", required = false) String guestSecondName,
+			@RequestParam(value = "from", required = false) String fromDate,
+			@RequestParam(value = "to", required = false) String toDate) {
+		LocalDate startDate = LocalDate.parse(fromDate);
+		LocalDate endDate = LocalDate.parse(toDate);
+
+		return ReservationService.getInstance()
+				.updateReservation(
+						new Reservation(originalGuestFirstName, originalGuestSecondName, originalRoomId, LocalDate.parse(originalFromDate), LocalDate.parse(originalToDate)),
+						guestFirstName, guestSecondName, roomId, startDate, endDate);
+	}
+
+	// update work also by equals (for simplicity). So need to provide all initial fields.
+	@RequestMapping(value = "/delete/", method = RequestMethod.GET)
+	public String deleteReservation(@RequestParam(value = "roomId", required = true) int roomId,
+			@RequestParam(value = "name", required = true) String guestFirstName,
+			@RequestParam(value = "surname", required = true) String guestSecondName,
+			@RequestParam(value = "from", required = true) String fromDate,
+			@RequestParam(value = "to", required = true) String toDate) {
+		LocalDate startDate = LocalDate.parse(fromDate);
+		LocalDate endDate = LocalDate.parse(toDate);
+
+		return ReservationService.getInstance().deleteReservation(new Reservation(guestFirstName, guestSecondName, roomId, startDate, endDate));
+	}
+
 	@RequestMapping("/listReservations")
 	public String printReservationsList() {
 		return ReservationService.getInstance().listReservations();
@@ -46,12 +101,7 @@ public class Application {
 
 	@RequestMapping("/test")
 	public String reservationTest() {
-		return "Test value";
-	}
-
-	@RequestMapping(value = "/test1/{id}", method = RequestMethod.GET)
-	public String reservationTest(@PathVariable("id") long id) {
-		return "Another one. This time with param = " + id;
+		return "Test";
 	}
 
 }

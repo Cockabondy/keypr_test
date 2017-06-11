@@ -14,7 +14,7 @@ public class ReservationService {
 	private static ReservationService service;
 	private static List<Reservation> reservationList;
 	private static final SimpleDateFormat DF = new SimpleDateFormat("yyyy-MM-dd");
-	
+
 	static {
 		//Initialize some default values for usage (it's easier to use some kind of in-memory data for testing)
 		reservationList = new ArrayList<>();
@@ -42,8 +42,7 @@ public class ReservationService {
 	}
 
 	public String getReservationsByDateRange(LocalDate startDate, LocalDate endDate) {
-		List<Reservation> resultList = reservationList.stream().filter(r -> inDateRange(startDate, endDate, r))
-				.collect(Collectors.toList());
+		List<Reservation> resultList = reservationList.stream().filter(r -> inDateRange(startDate, endDate, r)).collect(Collectors.toList());
 
 		return resultList.toString();
 	}
@@ -58,25 +57,44 @@ public class ReservationService {
 
 	public String createReservation(String guestFirstName, String guestSecondName, Integer roomNumber, LocalDate startDate, LocalDate endDate) {
 		reservationList.add(new Reservation(guestFirstName, guestSecondName, roomNumber, startDate, endDate));
-		return "Your reservation succesfully created!";
+		return "Your reservation succesfully processed!";
+	}
+
+	// TODO: create different options for read?.. (e.g. readByRoomId)
+	public String readReservation(Reservation reservation) {
+		Reservation reservationResponse = findReservationByExample(reservation);
+		return reservationResponse == null ? "Unable to find matching reservation." : reservationResponse.toString();
+	}
+
+	private Reservation findReservationByExample(Reservation reservation) {
+		for (Reservation reservationExample : reservationList) {
+			if (reservationExample.equals(reservation)) return reservationExample;
+		}
+
+		return null;
 	}
 
 	// TODO: maybe use Optional to generate response.
-	public String updateReservation(String guestFirstName, String guestSecondName, Integer roomNumber, LocalDate startDate, LocalDate endDate) {
-		if (true) {
-			// if found reservation, return successful response
+	public String updateReservation(Reservation initialReservation, String guestFirstName, String guestSecondName, Integer roomNumber, LocalDate startDate,
+			LocalDate endDate) {
+		Reservation reservationResponse = findReservationByExample(initialReservation);
+
+		if (reservationResponse != null) {
+			reservationList.remove(reservationResponse);
+			return createReservation(guestFirstName, guestSecondName, roomNumber, startDate, endDate);
 		} else {
-			// otherwise tell that could not find any matching entries.
+			return "Unable to find matching reservation.";
 		}
-		return "";
 	}
-	
-	public String deleteReservation(String guestFirstName, String guestSecondName, Integer roomNumber, LocalDate startDate, LocalDate endDate) {
-		if (true) {
-			// if found reservation, return successful response
+
+	public String deleteReservation(Reservation reservation) {
+		Reservation reservationResponse = findReservationByExample(reservation);
+
+		if (reservationResponse != null) {
+			reservationList.remove(reservationResponse);
+			return "Done.";
 		} else {
-			// otherwise tell that could not find any matching entries.
+			return "Unable to find matching reservation.";
 		}
-		return "";
 	}
 }
